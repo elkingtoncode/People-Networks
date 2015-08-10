@@ -1,0 +1,48 @@
+# Sum elements of array
+macro sum($a):
+    with $len = len($a):
+        with $total = 0:
+            with $i = 0:
+                while $i < $len:
+                    $total += $a[$i]
+                    $i += 1
+                $total
+
+# Arithmetic mean
+macro mean($a):
+    sum($a) / len($a)
+
+# Absolute value
+macro abs($n):
+    if($n<0, -$n, $n)
+
+# Proportional distance from zero (fixed-point input)
+macro normalize($a):
+    with $len = len($a):
+        with $total = 0:
+            with $i = 0:
+                while $i < $len:
+                    $a[$i] = abs($a[$i])
+                    $total += $a[$i]
+                    $i += 1
+                with $wt = array($len):
+                    with $i = 0:
+                        while $i < $len:
+                            $wt[$i] = $a[$i] * ONE / $total
+                            $i += 1
+                        $wt
+
+# Bins values to 1, 1.5, 2
+macro catch($x):
+    if($x < (BAD - CATCH_TOLERANCE), NO, if($x > BAD + CATCH_TOLERANCE, YES, BAD))
+
+# Maximum value of array
+macro maximum($a):
+    with $max = $a[0]:
+        with $i = 1:
+            with $len = len($a):
+                while $i < $len:
+                    if $a[$i] > $max:
+                        $max = $a[$i]
+                    $i += 1
+                $max

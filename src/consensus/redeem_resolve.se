@@ -1,0 +1,45 @@
+import events as EVENTS
+import expiringEvents as EXPIRING
+import reporting as REPORTING
+import resolve as RESOLVE
+
+def smooth(branch, period, num_events, num_reports, flatsize):
+    with reputation = array(num_reports):
+        with i = 0:
+            while i < num_reports:
+                reputation[i] = REPORTING.getRepByIndex(branch, i)
+                i += 1
+            with adjusted_scores = array(num_reports):
+                adjusted_scores = slice(EXPIRING.getAdjPrinComp(branch, period, outitems=num_reports), items=0, items=num_reports)
+                with smooth_rep = array(num_reports):
+                    smooth_rep = slice(RESOLVE.smooth(adjusted_scores, reputation, num_reports, num_events, outitems=num_reports), items=0, items=num_reports)
+                    EXPIRING.setSmoothRep(branch, period, smooth_rep)
+                    return(1)
+
+def resolve(branch, period, num_events, num_reports, flatsize):
+    with reports_filled = array(flatsize):
+        reports_filled = slice(EXPIRING.getReportsFilled(branch, period, outitems=flatsize), items=0, items=flatsize)
+        with smooth_rep = array(num_reports):
+            smooth_rep = slice(EXPIRING.getSmoothRep(branch, period, outitems=num_reports), items=0, items=num_reports)
+            with scaled = array(num_events):
+                with scaled_max = array(num_events):
+                    with scaled_min = array(num_events):
+                        with j = 0:
+                            while j < num_events:
+                                with event = EXPIRING.getEvent(branch, period, j):
+                                    if fix(EVENTS.getMaxValue(event)) != YES and EVENTS.getNumOutcomes(event) == 2:
+                                        scaled[j] = 1
+                                        scaled_min[j] = fix(EVENTS.getMinValue(event))
+                                        scaled_max[j] = fix(EVENTS.getMaxValue(event))
+                                    else:
+                                        scaled[j] = 0
+                                        scaled_min[j] = NO
+                                        scaled_max[j] = YES
+                                j += 1
+                            with outcomes = array(num_events):
+                                outcomes = slice(RESOLVE.resolve(smooth_rep, reports_filled, scaled, scaled_max, scaled_min, num_reports, num_events, outitems=num_events), items=0, items=num_events)
+                                EXPIRING.setOutcomesFinal(branch, period, outcomes)
+                                return(1)
+
+inset('../../macros/constants.sm')
+inset('../../macros/fixed.sm')

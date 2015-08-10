@@ -1,0 +1,15 @@
+# Convert to fixed-point (base 2^64)
+macro fix($x):
+    2^64 * $x
+
+# Revert from fixed-point
+macro unfix($x):
+    $x / 2^64
+
+# Fixed-point multiplication
+macro fixed_multiply($x, $y):
+    $x * $y / 2^64
+
+# Fixed-point division
+macro fixed_divide($x, $y):
+    $x * 2^64 / $y
